@@ -1,0 +1,10 @@
+server:
+  port: 8083
+
+#配置rabbitMq 服务器
+spring:
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: guest
+    password: guest
