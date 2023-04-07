@@ -58,7 +58,6 @@ public class RabbitmqConfigTopic {
 
 
 
-
     //定时一发消息
     @Scheduled(fixedDelay = 1000)
     public void sendDirectMessage() {
@@ -72,12 +71,9 @@ public class RabbitmqConfigTopic {
 
         //rabbitTemplate.convertAndSend("topicExchange", "ab.cd", map);
         rabbitTemplate.convertAndSend("topicExchange", "topic.man", map);
-
-
         System.out.println("消息发送中"+map);
 
     }
-
 
 
 }
