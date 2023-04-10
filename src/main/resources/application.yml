@@ -18,11 +18,19 @@ spring:
 
 #mybatis-plus配置
 #mybatis-plus:
+  #mapper-location: classpath:mapper/*.xml
   #config-location: classpath:mapper/*.xml
-  #type-aliases-package: com.example.rabbitmqproducer.dom
 
-#mybatis
-mybatis:
-  mapper-locations: classpath:mapper/*.xml
-  mybatis.type-aliases-package: com.example.rabbitmqproducer.dom
-  logging.level.com.hs.Device.mapper: DEBUG
+
+#mybatis配置
+#mybatis:
+  #mapper-locations: classpath:mapper/*.xml
+
+
+#控制台打印sql
+logging:
+  level:
+    com:
+      example:
+        rabbitmqproducer:
+          mapper: DEBUG

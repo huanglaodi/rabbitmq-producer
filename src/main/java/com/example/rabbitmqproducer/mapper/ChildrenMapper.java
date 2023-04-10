@@ -1,13 +1,12 @@
 package com.example.rabbitmqproducer.mapper;
 
-import com.example.rabbitmqproducer.dom.Children;
+import com.example.rabbitmqproducer.model.Children;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
 
-@Component
 @Mapper
 public interface ChildrenMapper{
 

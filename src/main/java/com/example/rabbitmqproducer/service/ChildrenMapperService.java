@@ -1,6 +1,6 @@
 package com.example.rabbitmqproducer.service;
 
-import com.example.rabbitmqproducer.dom.Children;
+import com.example.rabbitmqproducer.model.Children;
 import com.example.rabbitmqproducer.mapper.ChildrenMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
