@@ -1,5 +1,5 @@
-package com.example.rabbitmqproducer.config;
 
+package com.example.rabbitmqproducer.config;
 import org.springframework.amqp.core.*;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -56,24 +56,22 @@ public class RabbitmqConfigTopic {
     }
 
 
-
-
     //定时一发消息
-    @Scheduled(fixedDelay = 1000)
+    /*@Scheduled(fixedDelay = 1000)
     public void sendDirectMessage() {
-        String messageId = String.valueOf((int)(Math.random()*10000));
-        String messageData = "消息测试！第" +num+++" 条信息";
+        String messageId = String.valueOf((int) (Math.random() * 10000));
+        String messageData = "消息测试！第" + num++ + " 条信息";
         String createTime = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
-        Map<String,Object> map=new HashMap<>();
-        map.put("messageId",messageId);
-        map.put("messageData",messageData);
-        map.put("createTime",createTime);
+        Map<String, Object> map = new HashMap<>();
+        map.put("messageId", messageId);
+        map.put("messageData", messageData);
+        map.put("createTime", createTime);
 
         //rabbitTemplate.convertAndSend("topicExchange", "ab.cd", map);
         rabbitTemplate.convertAndSend("topicExchange", "topic.man", map);
-        System.out.println("消息发送中"+map);
+        System.out.println("消息发送中" + map);
 
-    }
+    }*/
 
 
 }
