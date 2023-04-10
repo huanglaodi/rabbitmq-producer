@@ -16,15 +16,23 @@ spring:
     username: root
     password: root
 
-#mybatis-plus配置
+#mybatis-plus配置     此处注释掉仍然可以找到mapper的映射xml????
 #mybatis-plus:
   #mapper-location: classpath:mapper/*.xml
-  #config-location: classpath:mapper/*.xml
 
 
 #mybatis配置
 #mybatis:
   #mapper-locations: classpath:mapper/*.xml
+
+#redis
+  redis:
+    host: localhost
+  #Redis服务器连接端口
+    port: 6379
+  #Redis服务器连接密码（默认为空）
+    password:
+    timeout: 3000
 
 
 #控制台打印sql

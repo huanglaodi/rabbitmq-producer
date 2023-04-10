@@ -1,16 +1,23 @@
 
 package com.example.rabbitmqproducer.config;
-import org.springframework.amqp.core.*;
+
+import com.example.rabbitmqproducer.model.Children;
+import com.example.rabbitmqproducer.service.ChildrenMapperService;
+import com.example.rabbitmqproducer.util.RedisUtil;
+import org.springframework.amqp.core.Binding;
+import org.springframework.amqp.core.BindingBuilder;
+import org.springframework.amqp.core.Queue;
+import org.springframework.amqp.core.TopicExchange;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.util.ObjectUtils;
 
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 @Configuration
 public class RabbitmqConfigTopic {
@@ -18,6 +25,12 @@ public class RabbitmqConfigTopic {
 
     @Autowired
     RabbitTemplate rabbitTemplate;
+
+    @Autowired
+    ChildrenMapperService childrenMapperService;
+
+    @Autowired
+    RedisUtil redisUtil;
 
     static int num = 0;
 
@@ -57,21 +70,31 @@ public class RabbitmqConfigTopic {
 
 
     //定时一发消息
-    /*@Scheduled(fixedDelay = 1000)
+    @Scheduled(fixedDelay = 500)
     public void sendDirectMessage() {
-        String messageId = String.valueOf((int) (Math.random() * 10000));
-        String messageData = "消息测试！第" + num++ + " 条信息";
-        String createTime = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+        String[] ids = {"1","2","3"};
+        if(++num > 3){
+            num = 1;
+        }
+
+        Children children = new Children();
+        children = redisUtil.getObject(""+num,Children.class);
+        if(ObjectUtils.isEmpty(children)){
+            children = childrenMapperService.selectById(ids[num-1]);
+            redisUtil.add(""+num,children);
+            redisUtil.expire(""+num,20000, TimeUnit.MILLISECONDS);
+        }
+
         Map<String, Object> map = new HashMap<>();
-        map.put("messageId", messageId);
-        map.put("messageData", messageData);
-        map.put("createTime", createTime);
+        map.put("id", children.getId());
+        map.put("name", children.getName());
+        map.put("score", children.getScore());
 
         //rabbitTemplate.convertAndSend("topicExchange", "ab.cd", map);
         rabbitTemplate.convertAndSend("topicExchange", "topic.man", map);
         System.out.println("消息发送中" + map);
 
-    }*/
+    }
 
 
 }

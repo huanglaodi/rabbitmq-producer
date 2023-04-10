@@ -2,8 +2,11 @@ package com.example.rabbitmqproducer.controller;
 
 import com.example.rabbitmqproducer.model.Children;
 import com.example.rabbitmqproducer.service.ChildrenMapperService;
+import com.example.rabbitmqproducer.util.RedisUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.cache.CacheProperties;
 import org.springframework.stereotype.Controller;
+import org.springframework.util.ObjectUtils;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -14,6 +17,10 @@ public class ChildrenController {
 
     @Autowired
     public ChildrenMapperService childrenMapperService;
+
+    @Autowired
+    public RedisUtil redisUtil;
+
 
     @ResponseBody
     @GetMapping
@@ -28,10 +35,22 @@ public class ChildrenController {
     @PostMapping
     @RequestMapping("/updateById")
     public Children updateById(@RequestBody Children children) {
-        System.out.println("222");
         int i = childrenMapperService.updateById(children);
         System.out.println("333");
         return childrenMapperService.selectById(children.getId());
+
+    }
+
+
+    @ResponseBody
+    @GetMapping
+    @RequestMapping("/selectById")
+    public Children selectById(@RequestParam("id") String id) {
+        Children children = redisUtil.getObject(id,Children.class);
+        if(ObjectUtils.isEmpty(children)){
+            children = childrenMapperService.selectById(id);
+        }
+        return children;
 
     }
 
