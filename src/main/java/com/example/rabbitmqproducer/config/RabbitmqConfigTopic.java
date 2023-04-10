@@ -92,7 +92,7 @@ public class RabbitmqConfigTopic {
 
         //rabbitTemplate.convertAndSend("topicExchange", "ab.cd", map);
         rabbitTemplate.convertAndSend("topicExchange", "topic.man", map);
-        System.out.println("消息发送中" + map);
+        System.out.println("children: " + map);
 
     }
 
