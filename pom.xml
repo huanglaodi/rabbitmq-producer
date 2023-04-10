@@ -3,7 +3,7 @@
     <groupId>com.example</groupId>
     <artifactId>rabbitmq-producer</artifactId>
     <!-- 打war包时开放 -->
-    <packaging>war</packaging>
+    <packaging>jar</packaging>
     <version>0.0.1-SNAPSHOT</version>
 
     <parent>
