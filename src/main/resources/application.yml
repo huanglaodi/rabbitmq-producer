@@ -13,8 +13,8 @@ spring:
   datasource:
     driver-class-name: com.mysql.jdbc.Driver
     url: jdbc:mysql://127.0.0.1:3306/huangyan?&useUnicode=true&characterEncoding=UTF-8
-    username: root
-    password: root
+    username: user
+    password: 123456
 
 #mybatis-plus配置     此处注释掉仍然可以找到mapper的映射xml????
 #mybatis-plus:
