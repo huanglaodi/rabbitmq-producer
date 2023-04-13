@@ -70,7 +70,7 @@ public class RabbitmqConfigTopic {
 
 
     //定时一发消息
-    @Scheduled(fixedDelay = 500)
+   /* @Scheduled(fixedDelay = 500)
     public void sendDirectMessage() {
         String[] ids = {"1","2","3"};
         if(++num > 3){
@@ -94,7 +94,7 @@ public class RabbitmqConfigTopic {
         rabbitTemplate.convertAndSend("topicExchange", "topic.man", map);
         System.out.println("children: " + map);
 
-    }
+    }*/
 
 
 }
