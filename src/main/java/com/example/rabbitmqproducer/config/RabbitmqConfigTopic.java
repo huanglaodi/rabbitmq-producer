@@ -14,6 +14,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.annotation.Scheduled;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Configuration
@@ -67,13 +68,13 @@ public class RabbitmqConfigTopic {
     //定时一发消息
     @Scheduled(fixedDelay = 10000)
     public void sendDirectMessage() {
-        String[] ids = {"1","2","3"};
+        List<String> ids = childrenMapperService.getAllIds();
         if(++num > 3){
             num = 1;
         }
 
         Children children = new Children();
-        children = childrenMapperService.selectById(ids[num-1]);
+        children = childrenMapperService.selectById(ids.get(num-1));
 
         Map<String, Object> map = new HashMap<>();
         map.put("id", children.getId());

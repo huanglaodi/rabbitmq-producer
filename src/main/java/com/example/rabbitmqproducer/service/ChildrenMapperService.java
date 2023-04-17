@@ -44,4 +44,8 @@ public class ChildrenMapperService  {
     public List<Children> selects(){
         return childrenMapper.selects();
     }
+
+    public List<String> getAllIds(){
+        return childrenMapper.getAllIds();
+    }
 }

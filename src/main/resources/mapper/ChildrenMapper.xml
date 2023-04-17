@@ -12,4 +12,9 @@
     <select id='selects' resultMap="BaseResultMap">
         select * from children_s;
     </select>
+
+    <!--获取所有id-->
+    <select id="getAllIds" resultType="string">
+        select id from children_s;
+    </select>
 </mapper>
