@@ -14,6 +14,7 @@ import org.springframework.util.CollectionUtils;
 
 import java.util.HashSet;
 import java.util.Set;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
@@ -47,6 +48,8 @@ public class RedisCache implements Cache {
     public void putObject(Object key, Object value) {
         if (value != null) {
             redisTemplate.opsForValue().set(key.toString(), value);
+            //设置有效期1分钟
+            redisTemplate.expire(key.toString(),60000, TimeUnit.MILLISECONDS);
         }
     }
 
