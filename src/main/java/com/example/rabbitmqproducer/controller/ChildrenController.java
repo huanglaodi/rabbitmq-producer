@@ -24,6 +24,15 @@ public class ChildrenController {
 
     @ResponseBody
     @GetMapping
+    @RequestMapping("/selectAll")
+    public List<Children> selectAll() {
+
+        return childrenMapperService.selectAll();
+
+    }
+
+    @ResponseBody
+    @GetMapping
     @RequestMapping("/selectByName")
     public List<Children> selectByName(@RequestParam("name") String name) {
 
@@ -46,10 +55,9 @@ public class ChildrenController {
     @GetMapping
     @RequestMapping("/selectById")
     public Children selectById(@RequestParam("id") String id) {
-        Children children = redisUtil.getObject(id,Children.class);
-        if(ObjectUtils.isEmpty(children)){
-            children = childrenMapperService.selectById(id);
-        }
+
+          Children children = childrenMapperService.selectById(id);
+
         return children;
 
     }

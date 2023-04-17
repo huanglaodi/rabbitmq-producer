@@ -1,9 +1,13 @@
 package com.example.rabbitmqproducer.model;
 
+import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 
+import java.io.Serializable;
+
 @Data
-public class Children{
+@TableName(value="children_s")
+public class Children implements Serializable {
 
     private String id;
 

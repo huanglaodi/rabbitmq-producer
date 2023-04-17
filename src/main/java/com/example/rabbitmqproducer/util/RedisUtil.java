@@ -18,6 +18,8 @@ import java.util.concurrent.TimeUnit;
 /**
  * @author wxl
  * @date 2021-08-15 18:44
+ *
+ * 这种老式方式直接操作缓存， redis+mybatis使用二级缓存操作数据库时同步缓存
  */
 @Slf4j
 @Component
@@ -37,6 +39,7 @@ public class RedisUtil {
      * @param value
      * @return
      */
+
     public <K, V> void add(K key, V value) {
         try {
             if (value != null) {
@@ -50,13 +53,14 @@ public class RedisUtil {
         }
     }
 
-    /**
+   /**
      * 数据缓存至redis并设置过期时间
      *
      * @param key
      * @param value
      * @return
-     */
+    */
+
     public <K, V> void add(K key, V value, long timeout, TimeUnit unit) {
         try {
             if (value != null) {
@@ -70,13 +74,14 @@ public class RedisUtil {
         }
     }
 
-    /**
+   /**
      * 写入 hash-set,已经是key-value的键值，不能再写入为hash-set
      *
      * @param key    must not be {@literal null}.
      * @param subKey must not be {@literal null}.
      * @param value  写入的值
-     */
+    * */
+
     public <K, SK, V> void addHashCache(K key, SK subKey, V value) {
         redisTemplate.opsForHash().put(DEFAULT_KEY_PREFIX + key, subKey, value);
     }
@@ -87,7 +92,8 @@ public class RedisUtil {
      * @param key    must not be {@literal null}.
      * @param subKey must not be {@literal null}.
      * @param value  写入的值
-     */
+     * */
+
     public <K, SK, V> void addHashCache(K key, SK subKey, V value, long timeout, TimeUnit unit) {
         redisTemplate.opsForHash().put(DEFAULT_KEY_PREFIX + key, subKey, value);
         redisTemplate.expire(DEFAULT_KEY_PREFIX + key, timeout, unit);
@@ -98,7 +104,8 @@ public class RedisUtil {
      *
      * @param key    must not be {@literal null}.
      * @param subKey must not be {@literal null}.
-     */
+     * */
+
     public <K, SK> Object getHashCache(K key, SK subKey) {
         return  redisTemplate.opsForHash().get(DEFAULT_KEY_PREFIX + key, subKey);
     }
@@ -109,8 +116,8 @@ public class RedisUtil {
      *
      * @param key   must not be {@literal null}.
      * @param clazz 对象类型
-     * @return
-     */
+     * @return*/
+
     public <K, V> V getObject(K key, Class<V> clazz) {
         String value = this.get(key);
         V result = null;
@@ -125,8 +132,8 @@ public class RedisUtil {
      *
      * @param key   must not be {@literal null}.
      * @param clazz 对象类型
-     * @return
-     */
+     * @return*/
+
     public <K, V> List<V> getList(K key, Class<V> clazz) {
         String value = this.get(key);
         List<V> result = Collections.emptyList();
@@ -155,65 +162,65 @@ public class RedisUtil {
     }
 
     /**
-     * 删除key
-     */
+     * 删除key*/
+
     public void delete(String key) {
         redisTemplate.delete(key);
     }
 
     /**
-     * 批量删除key
-     */
+     * 批量删除key*/
+
     public void delete(Collection<String> keys) {
         redisTemplate.delete(keys);
     }
 
     /**
-     * 序列化key
-     */
+     * 序列化key*/
+
     public byte[] dump(String key) {
         return redisTemplate.dump(key);
     }
 
     /**
-     * 是否存在key
-     */
+     * 是否存在key*/
+
     public Boolean hasKey(String key) {
         return redisTemplate.hasKey(key);
     }
 
     /**
-     * 设置过期时间
-     */
+     * 设置过期时间*/
+
     public Boolean expire(String key, long timeout, TimeUnit unit) {
         return redisTemplate.expire(key, timeout, unit);
     }
 
     /**
-     * 设置过期时间
-     */
+     * 设置过期时间*/
+
     public Boolean expireAt(String key, Date date) {
         return redisTemplate.expireAt(key, date);
     }
 
 
     /**
-     * 移除 key 的过期时间，key 将持久保持
-     */
+     * 移除 key 的过期时间，key 将持久保持*/
+
     public Boolean persist(String key) {
         return redisTemplate.persist(key);
     }
 
     /**
-     * 返回 key 的剩余的过期时间
-     */
+     * 返回 key 的剩余的过期时间*/
+
     public Long getExpire(String key, TimeUnit unit) {
         return redisTemplate.getExpire(key, unit);
     }
 
     /**
-     * 返回 key 的剩余的过期时间
-     */
+     * 返回 key 的剩余的过期时间*/
+
     public Long getExpire(String key) {
         return redisTemplate.getExpire(key);
     }

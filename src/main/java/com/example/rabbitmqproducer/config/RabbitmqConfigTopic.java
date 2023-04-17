@@ -29,8 +29,6 @@ public class RabbitmqConfigTopic {
     @Autowired
     ChildrenMapperService childrenMapperService;
 
-    @Autowired
-    RedisUtil redisUtil;
 
     static int num = 0;
 
@@ -70,7 +68,7 @@ public class RabbitmqConfigTopic {
 
 
     //定时一发消息
-    @Scheduled(fixedDelay = 500)
+    @Scheduled(fixedDelay = 10000)
     public void sendDirectMessage() {
         String[] ids = {"1","2","3"};
         if(++num > 3){
@@ -78,12 +76,7 @@ public class RabbitmqConfigTopic {
         }
 
         Children children = new Children();
-        children = redisUtil.getObject(""+num,Children.class);
-        if(ObjectUtils.isEmpty(children)){
-            children = childrenMapperService.selectById(ids[num-1]);
-            redisUtil.add(""+num,children);
-            redisUtil.expire(""+num,20000, TimeUnit.MILLISECONDS);
-        }
+        children = childrenMapperService.selectById(ids[num-1]);
 
         Map<String, Object> map = new HashMap<>();
         map.put("id", children.getId());
