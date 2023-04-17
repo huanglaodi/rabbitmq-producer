@@ -16,12 +16,13 @@ public class ChildrenMapperService  {
 
 
     public List<Children> selectByName(String name) {
-        return childrenMapper.selectByName(name);
+        QueryWrapper<Children> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("name","小红");
+        return childrenMapper.selectList(queryWrapper);
     }
 
 
     public int updateById(Children children) {
-        System.out.print("service执行");
         int num = childrenMapper.updateById(children);
         System.out.println(num);
         return num;
@@ -29,12 +30,18 @@ public class ChildrenMapperService  {
 
 
     public Children selectById(String id) {
-        return childrenMapper.selectById(id);
+        QueryWrapper<Children> queryWrapper = new QueryWrapper<Children>();
+        queryWrapper.eq("id",id);
+        return childrenMapper.selectOne(queryWrapper);
     }
 
     public List<Children> selectAll(){
         QueryWrapper<Children> queryWrapper = new QueryWrapper<Children>();
         List<Children> childrenList = childrenMapper.selectList(queryWrapper);
         return childrenList;
+    }
+
+    public List<Children> selects(){
+        return childrenMapper.selects();
     }
 }

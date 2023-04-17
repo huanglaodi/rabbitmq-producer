@@ -1,128 +1,111 @@
 package com.example.rabbitmqproducer.util;
-import com.example.rabbitmqproducer.config.ApplicationContextHolder;
-import lombok.extern.java.Log;
-import org.apache.ibatis.cache.Cache;
-import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.data.redis.serializer.RedisSerializer;
 
+import com.example.rabbitmqproducer.config.ApplicationContextHolder;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.ibatis.cache.Cache;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.connection.RedisServerCommands;
+import org.springframework.data.redis.core.Cursor;
+import org.springframework.data.redis.core.RedisCallback;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.ScanOptions;
+import org.springframework.stereotype.Component;
+import org.springframework.util.CollectionUtils;
+
+import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 /**
- * 数据查询顺序：二级缓存 -> 一级缓存 -> 数据库
- * 我们在mybatis中指定了二级缓存，在mybatis启动会生成Cache对象，
- * 如果在该类使用@Autowired注入RedisTemplate是无法注入的，需要使用spring注入
+ * @class: MybatisRedisCache
  */
-/**
- * --效率，是成功的核心关键--
- *
- * @Author lzl
- * @Date 2023/3/9 08:02
- */
-@Log
-public class RedisCache implements Cache{
-    //RedisTemplate对象
-    private RedisTemplate redisTemplate;
+@Slf4j
+public class RedisCache implements Cache {
 
-    //id相当于当前sql对应的cache的命名空间 namespace="com.qf.mapper.xxxMapper"
+    // 读写锁
+    private final ReadWriteLock readWriteLock = new ReentrantReadWriteLock(true);
+
+    //这里使用了redis缓存，使用spring注入
+    private RedisTemplate<String, Object> redisTemplate = (RedisTemplate<String, Object>) ApplicationContextHolder.getBean("redisTemplate");
+
     private String id;
 
-    //读写锁：多线程中可以共享锁，如果大家都是读操作，提高数据的读的并发能力
-    //如果有一个人进行了写操作，其他人都不能进行读写操作了
-    private ReadWriteLock readWriteLock = new ReentrantReadWriteLock();
-
-    //获取RedisTemplate对象
-    public RedisTemplate getRedisTemplate(){
-        //判断
-        if(redisTemplate == null){
-            synchronized (RedisCache.class){
-                if(redisTemplate == null){
-                    RedisTemplate redisTemplate = ApplicationContextHolder.getRedisTemplate();
-                    //设置key使用string类型的序列化方式
-                    redisTemplate.setKeySerializer(RedisSerializer.string());
-                    return redisTemplate;
-                }
-                return this.redisTemplate;
-            }
-
+    public RedisCache(final String id) {
+        if (id == null) {
+            throw new IllegalArgumentException("Cache instances require an ID");
         }
-        return redisTemplate;
+        this.id = id;
+    }
+
+    @Override
+    public String getId() {
+        return this.id;
+    }
+
+    @Override
+    public void putObject(Object key, Object value) {
+        if (value != null) {
+            redisTemplate.opsForValue().set(key.toString(), value);
+        }
+    }
+
+    @Override
+    public Object getObject(Object key) {
+        try {
+            if (key != null) {
+                return redisTemplate.opsForValue().get(key.toString());
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            log.error("缓存出错 ");
+        }
+        return null;
+    }
+
+    @Override
+    public Object removeObject(Object key) {
+        if (key != null) {
+            redisTemplate.delete(key.toString());
+        }
+        return null;
+    }
+
+    @Override
+    public void clear() {
+        log.debug("清空缓存");
+        try {
+            Set<String> keys = scan(this.id);
+            if (!CollectionUtils.isEmpty(keys)) {
+                redisTemplate.delete(keys);
+            }
+        } catch (Exception e) {
+            log.error("清空缓存", e);
+        }
+    }
+
+    public Set<String> scan(String matchKey) {
+        Set<String> keys = redisTemplate.execute((RedisCallback<Set<String>>) connection -> {
+            Set<String> keysTmp = new HashSet<>();
+            Cursor<byte[]> cursor = connection.scan(new ScanOptions.ScanOptionsBuilder().match("*" + matchKey + "*").count(1000).build());
+            while (cursor.hasNext()) {
+                keysTmp.add(new String(cursor.next()));
+            }
+            return keysTmp;
+        });
+
+        return keys;
+    }
+
+    @Override
+    public int getSize() {
+        Long size = redisTemplate.execute((RedisCallback<Long>) RedisServerCommands::dbSize);
+        return size.intValue();
     }
 
     @Override
     public ReadWriteLock getReadWriteLock() {
-        return readWriteLock;
-    }
-
-    //构造器
-    public RedisCache(String id) {
-        System.out.println("id："+id);
-        this.id = id;
-    }
-
-    //id相当于当前sql对应的cache的命名空间
-    @Override
-    public String getId() {
-        System.out.println("getId："+id);
-        return id;
-    }
-
-    /**
-     * 将结果放入缓存，当访问查询方法时调用，所以这里必须通过getRedisTemplate()方法来获取redisTemplate对象
-     * @param key -> 命名空间 + sql + 参数 = 组成的字符串
-     * @param value -> sql查询的结果
-     */
-    @Override
-    public void putObject(Object key, Object value) {
-        System.out.println("putObject中的key："+key);
-        System.out.println("putObject中的value："+value);
-        getRedisTemplate().opsForValue().set(key.toString(),value);
-    }
-
-    /**
-     * 获取缓存中的数据，当访问查询方法时调用，所以这里必须通过getRedisTemplate()方法来获取redisTemplate对象
-     * @param key
-     * @return
-     */
-    @Override
-    public Object getObject(Object key) {
-        System.out.println("getObject："+key);
-        return getRedisTemplate().opsForValue().get(key.toString());
-    }
-
-    /**
-     * 从缓存中移除数据，当访问查询方法时调用，所以这里必须通过getRedisTemplate()方法来获取redisTemplate对象
-     * @param key
-     * @return
-     */
-    @Override
-    public Object removeObject(Object key) {
-        System.out.println("removeObject："+key);
-        return getRedisTemplate().delete(key.toString());
-    }
-
-    /**
-     * 清空缓存
-     */
-    @Override
-    public void clear() {
-        System.out.println("clear");
-        Set keys = getRedisTemplate().keys("*" + id + "*");
-        System.out.println("清空缓存keys："+keys);
-        getRedisTemplate().delete(keys);
-    }
-
-    /**
-     * 获取缓存数据长度
-     * @return
-     */
-    @Override
-    public int getSize() {
-        Set keys = getRedisTemplate().keys("*" + id + "*");
-        return keys.size();
+        return this.readWriteLock;
     }
 
 }
-
-

@@ -3,7 +3,6 @@ package com.example.rabbitmqproducer.config;
 
 import com.example.rabbitmqproducer.model.Children;
 import com.example.rabbitmqproducer.service.ChildrenMapperService;
-import com.example.rabbitmqproducer.util.RedisUtil;
 import org.springframework.amqp.core.Binding;
 import org.springframework.amqp.core.BindingBuilder;
 import org.springframework.amqp.core.Queue;
@@ -13,11 +12,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.annotation.Scheduled;
-import org.springframework.util.ObjectUtils;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.TimeUnit;
 
 @Configuration
 public class RabbitmqConfigTopic {
@@ -83,7 +80,6 @@ public class RabbitmqConfigTopic {
         map.put("name", children.getName());
         map.put("score", children.getScore());
 
-        //rabbitTemplate.convertAndSend("topicExchange", "ab.cd", map);
         rabbitTemplate.convertAndSend("topicExchange", "topic.man", map);
         System.out.println("children: " + map);
 

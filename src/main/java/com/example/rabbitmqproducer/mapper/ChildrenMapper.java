@@ -5,19 +5,14 @@ import com.example.rabbitmqproducer.model.Children;
 import com.example.rabbitmqproducer.util.RedisCache;
 import org.apache.ibatis.annotations.CacheNamespace;
 import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
 @Mapper
-@CacheNamespace(implementation = RedisCache.class)
+//@CacheNamespace注解搭配<cache-ref>解决注解与xml都能缓存
+@CacheNamespace(implementation = RedisCache.class, eviction = RedisCache.class)
 public interface ChildrenMapper extends BaseMapper<Children> {
 
-    List<Children> selectByName(@Param("name") String name);
-
-    int updateById(@Param("children") Children children);
-
-    Children selectById(@Param("id") String id);
-
+    List<Children> selects();
 
 }

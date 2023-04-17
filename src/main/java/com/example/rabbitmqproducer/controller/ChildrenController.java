@@ -62,4 +62,15 @@ public class ChildrenController {
 
     }
 
+    @ResponseBody
+    @PostMapping
+    @RequestMapping("/selects")
+    public List<Children> selects() {
+
+        List<Children> childrens = childrenMapperService.selects();
+
+        return childrens;
+
+    }
+
 }
