@@ -66,7 +66,7 @@ public class RabbitmqConfigTopic {
 
 
     //定时一发消息
-    /*@Scheduled(fixedDelay = 10000)
+    @Scheduled(fixedDelay = 10000)
     public void sendDirectMessage() {
         List<String> ids = childrenMapperService.getAllIds();
         if(++num > 3){
@@ -84,7 +84,7 @@ public class RabbitmqConfigTopic {
         rabbitTemplate.convertAndSend("topicExchange", "topic.man", map);
         System.out.println("children: " + map);
 
-    }*/
+    }
 
 
 }

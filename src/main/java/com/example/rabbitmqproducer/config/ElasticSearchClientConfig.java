@@ -6,6 +6,7 @@ import org.elasticsearch.client.RestHighLevelClient;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+/*es配置文件*/
 @Configuration
 public class ElasticSearchClientConfig {
 
