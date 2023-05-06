@@ -23,6 +23,24 @@ spring:
     password: 123456
     timeout: 3000
 
+
+  application:
+    #应用名称
+    name: producer
+    cloud:
+      nacos:
+        discovery:
+          #nacos地址
+          server-addr: 127.0.0.1:8848
+
+management:
+  endpoints:
+    web:
+      exposure:
+        #公开所有端点
+        include: '*'
+
+
 #mybatis-plus配置     此处注释掉仍然可以找到mapper的映射xml????
 mybatis-plus:
   mapper-location: classpath:mapper/*.xml

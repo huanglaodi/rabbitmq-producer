@@ -9,8 +9,8 @@
     </resultMap>
 
 
-    <select id='selects' resultMap="BaseResultMap">
-        select * from children_s;
+    <select id='selects' resultMap="BaseResultMap" parameterType="string">
+        select * from children_s where id= $id;
     </select>
 
     <!--获取所有id-->

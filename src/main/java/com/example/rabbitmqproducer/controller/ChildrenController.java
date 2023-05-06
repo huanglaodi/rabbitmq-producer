@@ -67,7 +67,7 @@ public class ChildrenController {
     @RequestMapping("/selects")
     public List<Children> selects() {
 
-        List<Children> childrens = childrenMapperService.selects();
+        List<Children> childrens = childrenMapperService.selects("2");
 
         return childrens;
 
