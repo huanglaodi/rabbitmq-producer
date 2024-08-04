@@ -16,6 +16,8 @@ public interface ChildrenMapper extends BaseMapper<Children> {
 
     List<Children> selects(@Param("id") String id);
 
-    List<String> getAllIds();
+    List<Integer> getAllIds();
+
+    int addChildren(Children children);
 
 }

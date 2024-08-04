@@ -1,4 +1,5 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.example</groupId>
     <artifactId>rabbitmq-producer</artifactId>
@@ -142,8 +143,8 @@
 
         <!-- 热部署 -->
         <dependency>
-            <groupId>org.springframework.boot </groupId>
-            <artifactId> spring-boot-devtools </artifactId>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-devtools</artifactId>
             <optional>true</optional>
         </dependency>
 
@@ -165,11 +166,11 @@
             <artifactId>elasticsearch-rest-high-level-client</artifactId>
             <version>7.17.3</version>
         </dependency>-->
-        <dependency>
+        <!--<dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-data-elasticsearch</artifactId>
             <version>2.2.5.RELEASE</version>
-        </dependency>
+        </dependency>-->
 
         <!--cloud-->
         <!--<dependency>
@@ -197,6 +198,11 @@
             <version>2.2.2.RELEASE</version>
         </dependency>
 
+        <dependency>
+            <groupId>org.apache.hadoop</groupId>
+            <artifactId>hadoop-client</artifactId>
+            <version>2.7.3</version>
+        </dependency>
 
     </dependencies>
 
@@ -225,5 +231,6 @@
 
         </plugins>
     </build>
+
 
 </project>

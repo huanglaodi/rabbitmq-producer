@@ -28,8 +28,20 @@ public class ChildrenMapperService  {
         return num;
     }
 
+    public int addChildrens() {
+        Children children = new Children();
+        for(int i=1;i<=10000;i++){
+            children.setName("小赵"+i);
+            children.setScore((int)(Math.random()*100));
+            children.setOkStatus(((int)(Math.random()*10))%2==1?false:true);
+            children.setAddress("广州"+i);
+            childrenMapper.addChildren(children);
+        }
 
-    public Children selectById(String id) {
+        return 1;
+    }
+
+    public Children selectById(int id) {
         QueryWrapper<Children> queryWrapper = new QueryWrapper<Children>();
         queryWrapper.eq("id",id);
         return childrenMapper.selectOne(queryWrapper);
@@ -45,7 +57,7 @@ public class ChildrenMapperService  {
         return childrenMapper.selects(id);
     }
 
-    public List<String> getAllIds(){
+    public List<Integer> getAllIds(){
         return childrenMapper.getAllIds();
     }
 }

@@ -68,7 +68,7 @@ public class RabbitmqConfigTopic {
     //定时一发消息
     @Scheduled(fixedDelay = 10000)
     public void sendDirectMessage() {
-        List<String> ids = childrenMapperService.getAllIds();
+        List<Integer> ids = childrenMapperService.getAllIds();
         if(++num > 3){
             num = 1;
         }

@@ -4,9 +4,7 @@ import com.example.rabbitmqproducer.model.Children;
 import com.example.rabbitmqproducer.service.ChildrenMapperService;
 import com.example.rabbitmqproducer.util.RedisUtil;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.cache.CacheProperties;
 import org.springframework.stereotype.Controller;
-import org.springframework.util.ObjectUtils;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -54,7 +52,7 @@ public class ChildrenController {
     @ResponseBody
     @GetMapping
     @RequestMapping("/selectById")
-    public Children selectById(@RequestParam("id") String id) {
+    public Children selectById(@RequestParam("id") Integer id) {
 
           Children children = childrenMapperService.selectById(id);
 
@@ -70,6 +68,16 @@ public class ChildrenController {
         List<Children> childrens = childrenMapperService.selects("2");
 
         return childrens;
+
+    }
+
+    @ResponseBody
+    @PostMapping("/addChildrens")
+    public int addChildrens() {
+
+        int i = childrenMapperService.addChildrens();
+
+        return i;
 
     }
 

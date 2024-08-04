@@ -3,10 +3,28 @@
 <mapper namespace="com.example.rabbitmqproducer.mapper.ChildrenMapper">
     <cache-ref namespace="com.example.rabbitmqproducer.mapper.ChildrenMapper"/>
     <resultMap id="BaseResultMap" type="com.example.rabbitmqproducer.model.Children">
-        <id column="id" jdbcType="VARCHAR" property="id" />
+        <id column="id" jdbcType="INTEGER" property="id" />
         <result column="name" jdbcType="VARCHAR" property="name" />
         <result column="score" jdbcType="INTEGER" property="score" />
+        <result column="ok_status" jdbcType="INTEGER" property="okStatus" />
+        <result column="address" jdbcType="VARCHAR" property="address" />
     </resultMap>
+
+    <insert id="addChildren" parameterType="com.example.rabbitmqproducer.model.Children">
+        insert into children_s
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="name != null">name,</if>
+            <if test="score != null">score,</if>
+            <if test="okStatus != null">ok_status,</if>
+            <if test="address != null">address,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="name != null">#{name},</if>
+            <if test="score != null">#{score},</if>
+            <if test="okStatus != null">#{okStatus},</if>
+            <if test="address != null">#{address},</if>
+        </trim>
+    </insert>
 
 
     <select id='selects' resultMap="BaseResultMap" parameterType="string">
@@ -14,7 +32,7 @@
     </select>
 
     <!--获取所有id-->
-    <select id="getAllIds" resultType="string">
+    <select id="getAllIds" resultType="integer">
         select id from children_s;
     </select>
 </mapper>

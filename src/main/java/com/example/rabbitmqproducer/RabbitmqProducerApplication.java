@@ -9,7 +9,7 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 @EnableScheduling
 @SpringBootApplication
 @EnableDiscoveryClient
-@MapperScan("com.example.rabbitmqproducer")
+//@MapperScan("com.example.rabbitmqproducer")        //不加mapperScan注解也可以
 public class RabbitmqProducerApplication {
 
     public static void main(String[] args) {

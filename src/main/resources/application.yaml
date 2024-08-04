@@ -1,5 +1,5 @@
 server:
-  port: 8083
+  port: 8084
 
 #配置rabbitMq 服务器
 spring:
@@ -43,7 +43,6 @@ management:
 
 #mybatis-plus配置     此处注释掉仍然可以找到mapper的映射xml????
 mybatis-plus:
-  mapper-location: classpath:mapper/*.xml
   configuration:
     cache-enabled: true      #使用缓存
     log-impl: org.apache.ibatis.logging.stdout.StdOutImpl   #控制台输出
@@ -51,6 +50,8 @@ mybatis-plus:
   #mybatis配置
 #mybatis:
   #mapper-locations: classpath:mapper/*.xml
+  mapper-locations: classpath:mapper/*.xml
+
 
 
 

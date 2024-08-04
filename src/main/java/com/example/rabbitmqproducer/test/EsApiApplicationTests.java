@@ -1,39 +1,11 @@
 package com.example.rabbitmqproducer.test;
 
-import com.alibaba.fastjson.JSON;
-import com.example.rabbitmqproducer.model.User;
-import org.elasticsearch.action.DocWriteRequest;
-import org.elasticsearch.action.admin.indices.delete.DeleteIndexRequest;
-import org.elasticsearch.action.bulk.BulkRequest;
-import org.elasticsearch.action.bulk.BulkResponse;
-import org.elasticsearch.action.delete.DeleteRequest;
-import org.elasticsearch.action.delete.DeleteResponse;
-import org.elasticsearch.action.get.GetRequest;
-import org.elasticsearch.action.get.GetResponse;
-import org.elasticsearch.action.index.IndexRequest;
-import org.elasticsearch.action.index.IndexResponse;
-import org.elasticsearch.action.search.SearchRequest;
-import org.elasticsearch.action.search.SearchResponse;
-import org.elasticsearch.action.support.master.AcknowledgedResponse;
-import org.elasticsearch.action.update.UpdateRequest;
-import org.elasticsearch.action.update.UpdateResponse;
-import org.elasticsearch.client.RequestOptions;
-import org.elasticsearch.client.RestHighLevelClient;
-import org.elasticsearch.client.indices.GetIndexRequest;
-import org.elasticsearch.common.xcontent.XContentType;
-import org.elasticsearch.index.query.QueryBuilders;
-import org.elasticsearch.index.query.TermQueryBuilder;
-import org.elasticsearch.search.SearchHit;
-import org.elasticsearch.search.builder.SearchSourceBuilder;
+import it.sauronsoftware.jave.*;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.data.elasticsearch.core.ElasticsearchRestTemplate;
 
-import java.io.IOException;
-import java.math.BigDecimal;
+import java.io.*;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 @SpringBootTest
@@ -42,53 +14,53 @@ class EsApiApplicationTests {
     private static final String index_name = "user_info";
 
 
-    @Autowired
+   /* @Autowired
     private RestHighLevelClient restHighLevelClient;
 
     @Autowired
     private ElasticsearchRestTemplate elasticsearchRestTemplate;
-
+*/
     /**
      * 创建一个索引库
      *
      * @throws IOException
      */
-    @Test
+  /*  @Test
     void createIndex() throws IOException {
         boolean result = elasticsearchRestTemplate.createIndex("liqiang");
         System.out.println(result);
-   /* CreateIndexRequest createIndexRequest = new CreateIndexRequest(index_name);
+   *//* CreateIndexRequest createIndexRequest = new CreateIndexRequest(index_name);
     CreateIndexResponse createIndexResponse = restHighLevelClient.indices().create(createIndexRequest, RequestOptions.DEFAULT);
     //打印创建结果
-    System.out.println(createIndexResponse.isAcknowledged());*/
-    }
+    System.out.println(createIndexResponse.isAcknowledged());*//*
+    }*/
 
     /**
      * 判断索引库是否存在
      */
-    @Test
+   /* @Test
     void searchIndex() throws IOException {
         GetIndexRequest request = new GetIndexRequest("liqiang");
         boolean exists = restHighLevelClient.indices().exists(request, RequestOptions.DEFAULT);
         System.out.println(exists);
-    }
+    }*/
 
     /**
      * 删除索引库
      */
-    @Test
+   /* @Test
     void removeIndex() throws IOException {
 
         DeleteIndexRequest deleteIndexRequest = new DeleteIndexRequest(index_name);
         AcknowledgedResponse response = restHighLevelClient.indices().delete(deleteIndexRequest, RequestOptions.DEFAULT);
         //打印删除结果
         System.out.println(response.isAcknowledged());
-    }
+    }*/
 
     /**
      * 创建文档
      */
-    @Test
+  /*  @Test
     void createDoc() throws IOException {
         User user = new User("张三", 22, "北京市");
         IndexRequest indexRequest = new IndexRequest(index_name, DocWriteRequest.OpType.CREATE.toString());
@@ -97,22 +69,22 @@ class EsApiApplicationTests {
         IndexRequest request = indexRequest.source(JSON.toJSONString(user), XContentType.JSON);
         IndexResponse response = restHighLevelClient.index(request, RequestOptions.DEFAULT);
         System.out.println(response.status());
-    }
+    }*/
 
     /**
      * 查询文档
      */
-    @Test
+ /*   @Test
     void queryDoc() throws IOException {
         GetRequest getRequest = new GetRequest(index_name, DocWriteRequest.OpType.CREATE.toString(), "2");
         GetResponse response = restHighLevelClient.get(getRequest, RequestOptions.DEFAULT);
         System.out.println(response.getSource());
-    }
+    }*/
 
     /**
      * 修改文档
      */
-    @Test
+   /* @Test
     void updateDoc() throws IOException {
         UpdateRequest updateRequest = new UpdateRequest(index_name, DocWriteRequest.OpType.CREATE.toString(), "2");
         User user = new User("李四", 55, "成都市");
@@ -120,22 +92,22 @@ class EsApiApplicationTests {
         updateRequest.timeout("1s");
         UpdateResponse response = restHighLevelClient.update(updateRequest, RequestOptions.DEFAULT);
         System.out.println(response.status());
-    }
+    }*/
 
     /**
      * 删除指定文档
      */
-    @Test
+   /* @Test
     void removeDoc() throws IOException {
         DeleteRequest deleteRequest = new DeleteRequest(index_name, null, "1");
         DeleteResponse response = restHighLevelClient.delete(deleteRequest, RequestOptions.DEFAULT);
         System.out.println(response.status());
-    }
+    }*/
 
     /**
      * 批量插入文档
      */
-    @Test
+  /*  @Test
     void bulkCreateDoc() throws IOException {
         BulkRequest bulkRequest = new BulkRequest();
         bulkRequest.timeout("10s");
@@ -151,12 +123,12 @@ class EsApiApplicationTests {
         }
         BulkResponse response = restHighLevelClient.bulk(bulkRequest, RequestOptions.DEFAULT);
         System.out.println(response.status());
-    }
+    }*/
 
     /**
      * 批量查询文档
      */
-    @Test
+    /*@Test
     void queryDocList() throws IOException {
         SearchRequest searchRequest = new SearchRequest(index_name);
 
@@ -174,11 +146,11 @@ class EsApiApplicationTests {
 
 
         //查询索引库中所有的文档数据
-       /* SearchResponse response = restHighLevelClient.search(searchRequest, RequestOptions.DEFAULT);
+        SearchResponse response = restHighLevelClient.search(searchRequest, RequestOptions.DEFAULT);
         for (SearchHit hit : response.getHits()) {
             System.out.println(hit.getSourceAsString());
-        }*/
-    }
+        }
+    }*/
 
 
     @Test
@@ -252,6 +224,61 @@ class EsApiApplicationTests {
         a.add(2);
         int y = a.size();
 
+    }
+
+    @Test
+    public void testCopyFile(){
+        InputStream in = null;
+        OutputStream out = null;
+        try{
+            in = new FileInputStream("C:/Users/86189/Desktop/简历.docx");
+            out = new FileOutputStream("D:/jianli.docx");
+            byte[] by = new byte[1024];
+            int length ;
+            while((length = in.read(by))>0){
+                out.write(by,0,length);
+            }
+            out.close();
+            in.close();
+        }catch(Exception e){
+              e.printStackTrace();
+        }
 
     }
+
+    @Test
+    public void testDeleteFile (){
+
+         File file = new File("D:/jianli.docx");
+         file.delete();
+
+    }
+
+    @Test
+    public void testJave() throws Exception{
+
+        File source = new File("D:/迅雷下载/不差钱.mp4");
+        File target = new File("D:/不差钱.mp4");
+
+        AudioAttributes audio = new AudioAttributes();
+
+        audio.setCodec("libmp3lame");
+        audio.setBitRate(new Integer(64000));
+        audio.setChannels(new Integer(1));
+        audio.setSamplingRate(new Integer(22050));
+
+        VideoAttributes video = new VideoAttributes();
+        video.setSize(new VideoSize(400,320));
+
+        EncodingAttributes attrs = new EncodingAttributes();
+        attrs.setFormat("mp4");
+        attrs.setAudioAttributes(audio);
+        attrs.setVideoAttributes(video);
+
+        Encoder encoder = new Encoder();
+        encoder.encode(source,target,attrs);
+
+    }
+
+
 }
