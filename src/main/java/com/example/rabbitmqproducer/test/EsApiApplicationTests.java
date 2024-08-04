@@ -1,6 +1,5 @@
 package com.example.rabbitmqproducer.test;
 
-import it.sauronsoftware.jave.*;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
@@ -254,7 +253,7 @@ class EsApiApplicationTests {
 
     }
 
-    @Test
+   /* @Test
     public void testJave() throws Exception{
 
         File source = new File("D:/迅雷下载/不差钱.mp4");
@@ -278,7 +277,7 @@ class EsApiApplicationTests {
         Encoder encoder = new Encoder();
         encoder.encode(source,target,attrs);
 
-    }
+    }*/
 
 
 }
