@@ -60,7 +60,7 @@ public class RabbitmqConfigTopic {
 
 
     //定时一发消息
-    @Scheduled(fixedDelay = 1000)
+    @Scheduled(fixedDelay = 1200)
     public void sendDirectMessage() {
         String messageId = String.valueOf((int)(Math.random()*10000));
         String messageData = "消息测试！第" +num+++" 条信息";
