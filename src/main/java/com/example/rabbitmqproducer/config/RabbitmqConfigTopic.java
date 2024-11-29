@@ -1,6 +1,7 @@
 
 package com.example.rabbitmqproducer.config;
 
+import com.alibaba.fastjson.JSONObject;
 import com.example.rabbitmqproducer.model.Children;
 import com.example.rabbitmqproducer.service.ChildrenMapperService;
 import org.springframework.amqp.core.Binding;
@@ -13,6 +14,13 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.annotation.Scheduled;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -69,20 +77,29 @@ public class RabbitmqConfigTopic {
     @Scheduled(fixedDelay = 9000)
     public void sendDirectMessage() {
         List<Integer> ids = childrenMapperService.getAllIds();
-        if(++num > 3){
+        if (++num > 3) {
             num = 1;
         }
 
         Children children = new Children();
-        children = childrenMapperService.selectById(ids.get(num-1));
+        children = childrenMapperService.selectById(ids.get(num - 1));
 
         Map<String, Object> map = new HashMap<>();
         map.put("id", children.getId());
         map.put("name", children.getName());
         map.put("score", children.getScore());
 
-        rabbitTemplate.convertAndSend("topicExchange", "topic.man", map);
+        rabbitTemplate.convertAndSend("topicExchange", "topic.w", map);
         System.out.println("children: " + map);
+
+    }
+
+
+
+    //定时一发消息
+    @Scheduled(fixedDelay = 5000)
+    public void sendDirectMessage2() {
+
 
     }
 
