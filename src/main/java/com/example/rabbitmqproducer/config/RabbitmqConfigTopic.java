@@ -1,15 +1,28 @@
+
 package com.example.rabbitmqproducer.config;
 
-import org.springframework.amqp.core.*;
+import com.alibaba.fastjson.JSONObject;
+import com.example.rabbitmqproducer.model.Children;
+import com.example.rabbitmqproducer.service.ChildrenMapperService;
+import org.springframework.amqp.core.Binding;
+import org.springframework.amqp.core.BindingBuilder;
+import org.springframework.amqp.core.Queue;
+import org.springframework.amqp.core.TopicExchange;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.annotation.Scheduled;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Configuration
@@ -18,6 +31,10 @@ public class RabbitmqConfigTopic {
 
     @Autowired
     RabbitTemplate rabbitTemplate;
+
+    @Autowired
+    ChildrenMapperService childrenMapperService;
+
 
     static int num = 0;
 
@@ -56,27 +73,35 @@ public class RabbitmqConfigTopic {
     }
 
 
+    //定时一发消息
+    @Scheduled(fixedDelay = 9000)
+    public void sendDirectMessage() {
+        /*List<Integer> ids = childrenMapperService.getAllIds();
+        if (++num > 3) {
+            num = 1;
+        }
+
+        Children children = new Children();
+        children = childrenMapperService.selectById(ids.get(num - 1));
+
+        Map<String, Object> map = new HashMap<>();
+        map.put("id", children.getId());
+        map.put("name", children.getName());
+        map.put("score", children.getScore());
+
+        rabbitTemplate.convertAndSend("topicExchange", "topic.w", map);
+        System.out.println("children: " + map);*/
+
+    }
 
 
 
     //定时一发消息
-    @Scheduled(fixedDelay = 1200)
-    public void sendDirectMessage() {
-        String messageId = String.valueOf((int)(Math.random()*10000));
-        String messageData = "消息测试！第" +num+++" 条信息";
-        String createTime = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
-        Map<String,Object> map=new HashMap<>();
-        map.put("messageId",messageId);
-        map.put("messageData",messageData);
-        map.put("createTime",createTime);
+    @Scheduled(fixedDelay = 5000)
+    public void sendDirectMessage2() {
 
-        //rabbitTemplate.convertAndSend("topicExchange", "ab.cd", map);
-        rabbitTemplate.convertAndSend("topicExchange", "topic.man", map);
-
-        System.out.println("消息发送中"+map);
 
     }
-
 
 
 }

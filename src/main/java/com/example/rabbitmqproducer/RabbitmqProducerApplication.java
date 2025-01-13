@@ -1,12 +1,15 @@
 package com.example.rabbitmqproducer;
 
+import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
 import org.springframework.scheduling.annotation.EnableScheduling;
 
-@SpringBootApplication
 @EnableScheduling
+@SpringBootApplication
+@EnableDiscoveryClient
+//@MapperScan("com.example.rabbitmqproducer")        //不加mapperScan注解也可以
 public class RabbitmqProducerApplication {
 
     public static void main(String[] args) {
