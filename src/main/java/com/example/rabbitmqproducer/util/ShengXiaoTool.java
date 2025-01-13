@@ -1,82 +1,67 @@
 package com.example.rabbitmqproducer.util;
 
-import com.alibaba.fastjson.JSONObject;
+import com.nlf.calendar.Lunar;
+import com.nlf.calendar.Solar;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.URL;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
 
 public class ShengXiaoTool {
 
+    //十天干
+    private static String[] TIAN_GAN = {"甲", "已", "丙", "丁", "戊", "己", "庚", "辛", "壬", "癸"};
+    //十二地支
+    private static String[] DI_ZHI = {"子", "丑", "寅", "卯", "辰", "巳", "午", "未", "申", "酉", "戌", "亥"};
+    //十二生肖
+    private static String[] SHENG_XIAO = {"鼠", "牛", "虎", "兔", "龙", "蛇", "马", "羊", "猴", "鸡", "犬", "猪"};
+
 
     //查询生辰八字星座属相
-    public static String getJson(Map dateMap) throws IOException {
-        //十天干
-        String[] TIAN_GAN = {"甲", "已", "丙", "丁", "戊", "己", "庚", "辛", "壬", "癸"};
-        //十二地支
-        String[] DI_ZHI = {"子", "丑", "寅", "卯", "辰", "巳", "午", "未", "申", "酉", "戌", "亥"};
-
-        //dateMap.put("date", "1973-01-01 08:05:35");
-        // dateMap.put("type", "solar");
+    public static String getJson(Map dateMap) throws Exception {
 
         String dateStr = (String) dateMap.get("date");
-        String type = (String) dateMap.get("type");
-
+        //公历solar=1 农历lunar=0
+        int typeNumber = (int) dateMap.get("type");
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
         LocalDateTime dateTime = LocalDateTime.parse(dateStr, formatter);
-
-        //第三方api公历农历转换
         int year = dateTime.getYear();
         int month = dateTime.getMonth().getValue();
         int day = dateTime.getDayOfMonth();
         int hour = dateTime.getHour();
-        String url = "https://www.iamwawa.cn/nongli/api?type=" + type + "&year=" + year + "&month=" + month + "&day=" + day; // 替换为你的URL
-        URL obj = new URL(url);
-        HttpURLConnection con = (HttpURLConnection) obj.openConnection();
 
-        // 设置请求类型为GET
-        con.setRequestMethod("GET");
-        con.setRequestProperty("User-Agent", "iamwawa-open-api");
-
-        // 读取响应
-        BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
-        String inputLine;
-        StringBuilder response = new StringBuilder();
-        while ((inputLine = in.readLine()) != null) {
-            response.append(inputLine);
+        int solarYear , solarMonth, solarDay, lunarYear, lunarMonth, lunarDay;
+        // 公历转农历
+        if(1 == typeNumber) {
+            Solar solar = new Solar(year, month, day); // 公历2023年3月18日
+            Lunar lunar = solar.getLunar();
+            lunarYear = lunar.getYear();
+            lunarMonth = lunar.getMonth();
+            lunarDay = lunar.getDay();
+            solarYear = year;
+            solarMonth = month;
+            solarDay =day;
+        }else{
+            // 农历转公历
+            Lunar lunar = new Lunar(year, month, day);
+            Solar solar = lunar.getSolar();
+            solarYear = solar.getYear();
+            solarMonth = solar.getMonth();
+            solarDay = solar.getDay();
+            lunarYear = year;
+            lunarMonth = month;
+            lunarDay = day;
         }
-        in.close();
-
-        String responseStr = response.toString();
-        JSONObject json = JSONObject.parseObject(responseStr);
-
         //农历日期
-        JSONObject data = JSONObject.parseObject(json.getString("data"));
-        String lunar = data.getString("lunar").replace("年", "-").replace("月", "-").replace("日", "");
-        String[] lunarList = lunar.split("-");
-        int lunarYear = Integer.parseInt(lunarList[0]);
-        int lunarMonth = Integer.parseInt(lunarList[1]);
-        int lunarDay = Integer.parseInt(lunarList[2]);
-        String lunarStr = lunarYear + "-" + (lunarMonth > 10 ? lunarMonth : "0" + lunarMonth) + "-" + (lunarDay > 10 ? lunarDay : "0" + lunarDay);
-
+        String lunarStr = lunarYear + "-" + (lunarMonth > 9 ? lunarMonth : "0" + lunarMonth) + "-" + (lunarDay > 9 ? lunarDay : "0" + lunarDay);
         //公历日期
-        String solar = data.getString("solar").replace("年", "-").replace("月", "-").replace("日", "");
-        String[] solarList = solar.split("-");
-        int solarYear = Integer.parseInt(solarList[0]);
-        int solarMonth = Integer.parseInt(solarList[1]);
-        int solarDay = Integer.parseInt(solarList[2]);
-        String solarStr = solarYear + "-" + (solarMonth > 10 ? solarMonth : "0" + solarMonth) + "-" + (solarDay > 10 ? solarDay : "0" + solarDay);
+        String solarStr = solarYear + "-" + (solarMonth > 9 ? solarMonth : "0" + solarMonth) + "-" + (solarDay > 9 ? solarDay : "0" + solarDay);
 
+        Map data = new HashMap();
         data.put("solar", solarStr);
         data.put("lunar", lunarStr);
-
-        // 打印结果
-        System.out.println(data.toString());
 
         //根据农历年份获取干支纪年
         int yearForJiaZi = ((lunarYear - 1984) % 60) >= 0 ? (lunarYear - 1984) % 60 : (lunarYear - 1984) % 60 + 60;
@@ -103,17 +88,14 @@ public class ShengXiaoTool {
         String hourForGanZhi = DI_ZHI[hourGanZhi];
 
         //星座
-        String xinZuo = data.getString("constellation");
+        String xinZuo = getXingZuo(solarStr);
+
         //属相
-        String shuXiang = data.getString("zodiac");
+        String shuXiang = SHENG_XIAO[y];
         String message = "您的生辰八字：" + yearForGanZhi + "年 " + monthForGanZhi + "月 " + dayForGanZhi + "日 " + hourForGanZhi + "时 " + xinZuo + " 属" + shuXiang;
         return message;
     }
 
-    public static void main(String[] args) throws IOException {
-        // getYearForGanZhi(1982);
-        getJson(new HashMap());
-    }
 
     //日期在一年中的第几天
     public static int getDays(String dateStr) {
@@ -166,10 +148,69 @@ public class ShengXiaoTool {
         } else {
             days = num - 1;
         }
-
         return days;
+    }
+
+    //公历日期星座获取
+    private static String getXingZuo(String date){
+        String xingZuo = "";
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        LocalDate localDate = LocalDate.parse(date, formatter);
+        int year = localDate.getYear();
+        //白羊 3.21-4.19
+        if(localDate.isAfter(LocalDate.of(year,3,20)) && localDate.isBefore(LocalDate.of(year,4,20))){
+            xingZuo = "白羊座";
+        }
+        //金牛 4.20-5.20
+        if(localDate.isAfter(LocalDate.of(year,4,19)) && localDate.isBefore(LocalDate.of(year,5,21))){
+            xingZuo = "金牛座";
+        }
+        //双子 5.21-6.21
+        if(localDate.isAfter(LocalDate.of(year,5,20)) && localDate.isBefore(LocalDate.of(year,6,22))){
+            xingZuo = "双子座";
+        }
+        //巨蟹 6.22-7.22
+        if(localDate.isAfter(LocalDate.of(year,6,21)) && localDate.isBefore(LocalDate.of(year,7,23))){
+            xingZuo = "巨蟹座";
+        }
+        //狮子 7.23-8.22
+        if(localDate.isAfter(LocalDate.of(year,7,22)) && localDate.isBefore(LocalDate.of(year,8,23))){
+            xingZuo = "狮子座";
+        }
+        //处女 8.23-9.22
+        if(localDate.isAfter(LocalDate.of(year,8,22)) && localDate.isBefore(LocalDate.of(year,9,23))){
+            xingZuo = "处女座";
+        }
+        //天秤 9.23-10.23
+        if(localDate.isAfter(LocalDate.of(year,9,22)) && localDate.isBefore(LocalDate.of(year,10,24))){
+            xingZuo = "天秤座";
+        }
+        //天蝎 10.24-11.22
+        if(localDate.isAfter(LocalDate.of(year,10,23)) && localDate.isBefore(LocalDate.of(year,11,23))){
+            xingZuo = "天蝎座";
+        }
+        //射手 11.23-12.21
+        if(localDate.isAfter(LocalDate.of(year,11,22)) && localDate.isBefore(LocalDate.of(year,12,22))){
+            xingZuo = "射手座";
+        }
+        //摩羯 12.22-1.19
+        if((localDate.isAfter(LocalDate.of(year-1,12,21)) && localDate.isBefore(LocalDate.of(year,1,20)))||
+                (localDate.isAfter(LocalDate.of(year,12,21)) && localDate.isBefore(LocalDate.of(year+1,1,20)))){
+            xingZuo = "摩羯座";
+        }
+        //水瓶 1.20-2-18
+        if(localDate.isAfter(LocalDate.of(year,1,19)) && localDate.isBefore(LocalDate.of(year,2,19))){
+            xingZuo = "水瓶座";
+        }
+        //双鱼 2.19-3.20
+        if(localDate.isAfter(LocalDate.of(year,2,18)) && localDate.isBefore(LocalDate.of(year,3,21))){
+            xingZuo = "双鱼座";
+        }
+        return xingZuo;
 
     }
+
+
 
 
 }

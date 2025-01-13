@@ -1,6 +1,7 @@
 server:
   port: 8084
 
+
 #配置rabbitMq 服务器
 spring:
   rabbitmq:

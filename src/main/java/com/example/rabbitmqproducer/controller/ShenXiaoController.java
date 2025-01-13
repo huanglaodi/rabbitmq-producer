@@ -18,11 +18,19 @@ public class ShenXiaoController {
 
 
     @PostMapping("/getShenXiao")
-    public Map getShenXiao(@RequestBody Map map) throws IOException {
+    public Map getShenXiao(@RequestBody Map map) throws Exception {
+        System.out.println("post11");
         Map map1 = new HashMap();
         String message = ShengXiaoTool.getJson(map);
         map1.put("message",message);
+        System.out.println(message);
         return map1;
+    }
+
+    @GetMapping("/test")
+    public String test() {
+        System.out.println("laomaocece");
+        return "test111";
     }
 
 }
