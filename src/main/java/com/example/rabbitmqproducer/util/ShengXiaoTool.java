@@ -12,7 +12,7 @@ import java.util.Map;
 public class ShengXiaoTool {
 
     //十天干
-    private static String[] TIAN_GAN = {"甲", "已", "丙", "丁", "戊", "己", "庚", "辛", "壬", "癸"};
+    private static String[] TIAN_GAN = {"甲", "乙", "丙", "丁", "戊", "己", "庚", "辛", "壬", "癸"};
     //十二地支
     private static String[] DI_ZHI = {"子", "丑", "寅", "卯", "辰", "巳", "午", "未", "申", "酉", "戌", "亥"};
     //十二生肖
